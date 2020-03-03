@@ -41,8 +41,7 @@
       "custom_data": {
         "app_name": "{{user `app_name`}}",
         "source_ami": "{{user `source_ami`}}",
-        "kms_key_id": "{{user `kms_key_id`}}",
-        "ami_name": "{{user `app_name`}}_{{isotime | clean_resource_name}}",
+        "kms_key_id": "{{user `kms_key_id`}}"
       }
     }
   ]
