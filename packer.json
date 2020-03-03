@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "app_name": "{{env `app_name`}}",
+    "source_ami": "{{env `source_ami`}}",
+    "kms_key_id": "{{env `kms_key_id`}}"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "ap-northeast-1",
+    "source_ami": "{{user `source_ami`}}",
+    "ami_name": "{{user `app_name`}}_{{isotime | clean_resource_name}}",
+    "instance_type": "t2.small",
+    "ssh_username": "root",
+    "ssh_timeout": "5m",
+    "ssh_pty": true,
+    "tags": {
+      "Protected": "false"
+    },
+    "encrypt_boot": true,
+    "kms_key_id": "{{user `kms_key_id`}}"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "install_ansible.sh"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/{{user `app_name`}}.yml",
+      "playbook_dir": "./ansible",
+      "extra_arguments": "--extra-vars \"target_hosts=all\" --skip-tags without_packer"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true,
+      "custom_data": {
+        "app_name": "{{user `app_name`}}",
+        "source_ami": "{{user `source_ami`}}",
+        "kms_key_id": "{{user `kms_key_id`}}",
+        "ami_name": "{{user `app_name`}}_{{isotime | clean_resource_name}}",
+      }
+    }
+  ]
+}
