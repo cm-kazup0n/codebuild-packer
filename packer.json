@@ -10,7 +10,7 @@
     "source_ami": "{{user `source_ami`}}",
     "ami_name": "{{user `app_name`}}_{{isotime | clean_resource_name}}",
     "instance_type": "t2.small",
-    "ssh_username": "root",
+    "ssh_username": "ec2-user",
     "ssh_timeout": "5m",
     "ssh_pty": true,
     "tags": {
