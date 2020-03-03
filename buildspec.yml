@@ -7,9 +7,12 @@ phases:
     commands:
       - echo "Installing packer"
       - curl -qL -o packer.zip https://releases.hashicorp.com/packer/1.5.4/packer_1.5.4_linux_amd64.zip && unzip packer.zip
+      - echo "Installing yum"
+      - yum -y install jq
   build:
     commands:
       - ./packer build packer.json
+      - jq -r '.builds[-1].artifact_id' manifest.json | cut -d ":" -f2
   post_build:
     commands:
       - echo "Build completed `date`"
